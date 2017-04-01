@@ -1,6 +1,6 @@
 {
 	"name": "sagsoz06/statistics",
-	"description": "",
+	"description": "Statistics Module",
     "type": "asgard-module",
     "license": "MIT", 
     "require": {
@@ -20,12 +20,6 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-	"authors": [
-		{
-			"name": "Nicolas Widart",
-			"email": "n.widart@gmail.com"
-		}
-	],
 	"autoload": {
 		"psr-4": {
 			"Modules\\Statistics\\": ""
