@@ -55,7 +55,7 @@ class Statistics
      */
     public function getStartDate()
     {
-        return Carbon::parse($this->start)->formatLocalized('d F Y');
+        return Carbon::parse($this->start)->formatLocalized('%d %B %Y');
     }
 
     /**
@@ -63,7 +63,7 @@ class Statistics
      */
     public function getEndDate()
     {
-        return Carbon::parse($this->end)->formatLocalized('d F Y');
+        return Carbon::parse($this->end)->formatLocalized('%d %B %Y');
     }
 
     /**

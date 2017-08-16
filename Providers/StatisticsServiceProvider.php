@@ -3,12 +3,15 @@
 namespace Modules\Statistics\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Events\BuildingSidebar;
+use Modules\Core\Traits\CanGetSidebarClassForModule;
 use Modules\Core\Traits\CanPublishConfiguration;
+use Modules\Statistics\Events\Handlers\RegisterStatisticsSidebar;
 use Modules\Statistics\Services\Statistics;
 
 class StatisticsServiceProvider extends ServiceProvider
 {
-    use CanPublishConfiguration;
+    use CanPublishConfiguration, CanGetSidebarClassForModule;
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -24,6 +27,11 @@ class StatisticsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerBindings();
+
+        $this->app['events']->listen(
+            BuildingSidebar::class,
+            $this->getSidebarClassForModule('statistics', RegisterStatisticsSidebar::class)
+        );
     }
 
     public function boot()
