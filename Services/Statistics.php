@@ -1,8 +1,9 @@
 <?php namespace Modules\Statistics\Services;
 
-use Analytics;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Analytics;
+use Spatie\Analytics\Period;
 
 class Statistics
 {
@@ -84,8 +85,8 @@ class Statistics
     public function getDailyVisits()
     {
         $lastYear = $this->setStartDate(Carbon::parse('last year')->subDays($this->period))
-                         ->setEndDate(Carbon::parse('last year'))
-                         ->query(['dimensions' => 'ga:date']);
+            ->setEndDate(Carbon::parse('last year'))
+            ->query(['dimensions' => 'ga:date']);
 
         $visits = [];
 
@@ -98,7 +99,7 @@ class Statistics
             'dimensions' => 'ga:date'
         ];
         $array = $this->setStartDate(Carbon::today()->subDays($this->period))
-                      ->setEndDate(Carbon::today())->query($options);
+            ->setEndDate(Carbon::today())->query($options);
 
         foreach($array as $k => $v)
         {
@@ -202,7 +203,7 @@ class Statistics
     public function getPageViews()
     {
         $options = [
-          'dimensions' => 'ga:pagePath'
+            'dimensions' => 'ga:pagePath'
         ];
 
         $data = $this->query($options, 'ga:pageviews');
@@ -388,7 +389,11 @@ class Statistics
      */
     private function query($options=[], $metrics='ga:visits')
     {
-        return Analytics::performQuery($this->start, $this->end, $metrics, $options)->rows;
+        $period = Period::create(
+            $this->start,
+            $this->end
+        );
+        return Analytics::performQuery($period, $metrics, $options)->rows;
     }
 
     /**
