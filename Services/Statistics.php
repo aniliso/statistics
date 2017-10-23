@@ -85,8 +85,8 @@ class Statistics
     public function getDailyVisits()
     {
         $lastYear = $this->setStartDate(Carbon::parse('last year')->subDays($this->period))
-            ->setEndDate(Carbon::parse('last year'))
-            ->query(['dimensions' => 'ga:date']);
+                         ->setEndDate(Carbon::parse('last year'))
+                         ->query(['dimensions' => 'ga:date']);
 
         $visits = [];
 
@@ -99,7 +99,7 @@ class Statistics
             'dimensions' => 'ga:date'
         ];
         $array = $this->setStartDate(Carbon::today()->subDays($this->period))
-            ->setEndDate(Carbon::today())->query($options);
+                      ->setEndDate(Carbon::today())->query($options);
 
         foreach($array as $k => $v)
         {
@@ -135,7 +135,10 @@ class Statistics
      */
     public function getActiveVisitors()
     {
-        return Analytics::getActiveUsers();
+        $options = [
+            'dimensions' => 'ga:userType',
+        ];
+        return $this->query($options)[0][1];
     }
 
     /**
@@ -174,23 +177,34 @@ class Statistics
     }
 
     /**
-     * @return \Spatie\LaravelAnalytics\Collection
+     * @return \Spatie\Analytics\Collection
      */
     public function getMostVisitedPages()
     {
-        return Analytics::getMostVisitedPages($this->period, $this->limit);
+        return Analytics::fetchMostVisitedPages(Period::days(30));
     }
 
     /**
-     * @return \Spatie\LaravelAnalytics\Collection
+     * @return \Spatie\Analytics\Collection
      */
     public function getTopKeywords()
     {
-        return Analytics::getTopKeywords($this->period, $this->limit);
+        $options = [
+            'dimensions' => 'ga:keyword', 'sort' => '-ga:sessions', 'max-results' => 20, 'filters' => 'ga:keyword!=(not set);ga:keyword!=(not provided)'
+        ];
+        $response = $this->query($options, 'ga:sessions');
+
+        return collect($response['rows'] ?? [])
+            ->map(function (array $pageRow) {
+                return [
+                    'keyword'  => $pageRow[0],
+                    'sessions' => $pageRow[1]
+                ];
+            });
     }
 
     /**
-     * @return \Spatie\LaravelAnalytics\Collection
+     * @return \Spatie\Analytics\Collection
      */
     public function getTopReferrers()
     {
@@ -203,7 +217,7 @@ class Statistics
     public function getPageViews()
     {
         $options = [
-            'dimensions' => 'ga:pagePath'
+          'dimensions' => 'ga:pagePath'
         ];
 
         $data = $this->query($options, 'ga:pageviews');
@@ -219,7 +233,7 @@ class Statistics
         $options = [
             'dimensions' => 'ga:country, ga:region',
             'sort' => '-ga:visits',
-            'filters' => 'ga:country=='.$this->country
+            'filters' => 'ga:country==Turkey'
         ];
         $array = $this->query($options);
         $visits = [];
@@ -393,7 +407,7 @@ class Statistics
             $this->start,
             $this->end
         );
-        return Analytics::performQuery($period, $metrics, $options)->rows;
+        return Analytics::performQuery($period, $metrics, $options);
     }
 
     /**

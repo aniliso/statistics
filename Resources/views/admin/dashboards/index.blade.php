@@ -333,7 +333,7 @@
                 backgroundColor: '#55a9bc',
                 legend:  {textStyle: {color: '#000', fontName: 'Source Sans Pro'}},
                 displayMode: 'markers',
-                region: '{{ env('ANALYTICS_COUNTRY_CODE') }}',
+                region: '{{ env('ANALYTICS_COUNTRY_CODE', 'TR') }}',
                 resolution: 'provinces'
             };
             var chart = new google.visualization.GeoChart(document.getElementById('region-map'));
