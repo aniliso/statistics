@@ -2,12 +2,12 @@
 
 namespace Modules\Statistics\Providers;
 
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Events\BuildingSidebar;
 use Modules\Core\Traits\CanGetSidebarClassForModule;
 use Modules\Core\Traits\CanPublishConfiguration;
 use Modules\Statistics\Events\Handlers\RegisterStatisticsSidebar;
-use Modules\Statistics\Services\Statistics;
 
 class StatisticsServiceProvider extends ServiceProvider
 {
@@ -19,6 +19,8 @@ class StatisticsServiceProvider extends ServiceProvider
      */
     protected $defer = false;
 
+
+
     /**
      * Register the service provider.
      *
@@ -27,6 +29,7 @@ class StatisticsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerBindings();
+        $this->registerAlias();
 
         $this->app['events']->listen(
             BuildingSidebar::class,
@@ -47,7 +50,15 @@ class StatisticsServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array();
+        return [
+            \Spatie\LaravelAnalytics\LaravelAnalyticsServiceProvider::class
+        ];
+    }
+
+    public function registerAlias()
+    {
+        $aliasLoader = AliasLoader::getInstance();
+        $aliasLoader->alias('Analytics', \Spatie\LaravelAnalytics\LaravelAnalyticsFacade::class);
     }
 
     private function registerBindings()
