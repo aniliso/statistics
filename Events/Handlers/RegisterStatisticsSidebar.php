@@ -19,7 +19,7 @@ class RegisterStatisticsSidebar extends AbstractAdminSidebar
         $menu->group(trans('core::sidebar.content'), function (Group $group) {
             $group->item(trans('statistics::dashboards.title.statistics'), function (Item $item) {
                 $item->icon('fa fa-bar-chart');
-                $item->weight(10);
+                $item->weight(100);
                 $item->route('admin.statistics.dashboard.index');
                 $item->authorize(
                     $this->auth->hasAccess('statistics.dashboards.index')
