@@ -30,7 +30,9 @@ class StatisticsServiceProvider extends ServiceProvider
         $this->registerBindings();
         $this->registerAlias();
 
-        $this->app->register(AnalyticsServiceProvider::class);
+        if(class_exists(AnalyticsServiceProvider::class)) {
+            $this->app->register(AnalyticsServiceProvider::class);
+        }
 
         $this->app['events']->listen(
             BuildingSidebar::class,
